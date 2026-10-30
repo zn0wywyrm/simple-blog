@@ -6,7 +6,6 @@
     <title>The Daily Bugle</title>
 </head>
 <body>
-    <header>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,17 +42,39 @@
             border: 1px solid #ddd;
         }
     </style>
+    <header>
         <h1>The Daily Bugle</h1>
         <p>Real stories. Real voices. Your city.</p>
     </header>
 
     <main>
-        <button type="button">＋ Write a post</button>
+            <button type="button" id="show-post-form">＋ Write a post</button>
+
+            <form id="post-form" hidden>
+        
+        <form hidden>
+        <form>
+            <label for="user-name">User name</label>
+            <input id="user-name" name="user_name" type="text" required>
+
+            <label for="blog-text">Blog</label>
+            <textarea id="blog-text" name="blog_text" rows="6" required></textarea>
+
+            <button type="submit">Publish</button>
+        </form>
 
         <section>
             <h2>Latest posts</h2>
             <p>No posts yet. Be the first to share something!</p>
         </section>
     </main>
+    <script>
+        const showPostFormButton = document.getElementById('show-post-form');
+        const postForm = document.getElementById('post-form');
+
+        showPostFormButton.addEventListener('click', function () {
+            postForm.hidden = false;
+        });
+    </script>
 </body>
 </html>
