@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Daily Bugle</title>
+    <title>Blog Site</title>
 </head>
 <body>
     <style>
@@ -57,9 +57,72 @@
         article p {
             white-space: pre-wrap;
         }
+        form {
+            margin: 24px 0;
+            padding: 24px;
+            background-color: white;
+            border: 1px solid #d6deeb;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            box-sizing: border-box;
+            width: 100%;
+            margin-top: 6px;
+            padding: 10px;
+            border: 1px solid #aab3bd;
+            border-radius: 5px;
+            font: inherit;
+        }
+
+        form button {
+            margin: 20px 0 0;
+        }
+        article time {
+            color: #687386;
+            font-size: 14px;
+        }
+        .post-preview {
+            cursor: pointer;
+        }
+
+        .post-preview:hover {
+            background-color: #eef3fc;
+        }
+
+        .post-preview-text {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        dialog {
+            width: min(600px, calc(100% - 40px));
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 0;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 8px 30px #00000040;
+        }
+
+        dialog::backdrop {
+            background-color: #00000080;
+        }
+
+        #close-post {
+            margin-left: auto;
+        }
     </style>
     <header>
-        <h1>The Daily Bugle</h1>
+        <h1>Blog Site</h1>
         <p>Real stories. Real voices. Your city.</p>
     </header>
 
@@ -88,11 +151,26 @@
                 <p>No posts yet. Be the first to share something!</p>
             @else
                 @foreach ($posts as $post)
-                    <article>
+                    <article
+                        class="post-preview"
+                        tabindex="0"
+                        role="button"
+                        data-user="{{ $post->user_name }}"
+                        data-date="{{ $post->created_at->format('M j, Y \a\t g:i A') }}"
+                        data-text="{{ $post->blog_text }}"
+                    >
                         <h3>{{ $post->user_name }}</h3>
-                        <p>{{ $post->blog_text }}</p>
+                        <time>{{ $post->created_at->format('M j, Y \a\t g:i A') }}</time>
+                        <p class="post-preview-text">{{ strtok($post->blog_text, "\n") }}</p>
                     </article>
                 @endforeach
+
+                <dialog id="post-popup">
+                    <button type="button" id="close-post">Close</button>
+                    <h2 id="popup-user"></h2>
+                    <time id="popup-date"></time>
+                    <p id="popup-text"></p>
+                </dialog>
             @endif
         </section>
     </main>
@@ -102,7 +180,40 @@
         const postForm = document.getElementById('post-form');
 
         showPostFormButton.addEventListener('click', function () {
-            postForm.hidden = false;
+            postForm.hidden = !postForm.hidden;
+        });
+
+        const postPopup = document.getElementById('post-popup');
+        const popupUser = document.getElementById('popup-user');
+        const popupDate = document.getElementById('popup-date');
+        const popupText = document.getElementById('popup-text');
+
+        document.querySelectorAll('.post-preview').forEach(function (post) {
+            function openPost() {
+                popupUser.textContent = post.dataset.user;
+                popupDate.textContent = post.dataset.date;
+                popupText.textContent = post.dataset.text;
+                postPopup.showModal();
+            }
+
+            post.addEventListener('click', openPost);
+
+            post.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openPost();
+                }
+            });
+        });
+
+        document.getElementById('close-post').addEventListener('click', function () {
+            postPopup.close();
+        });
+
+        postPopup.addEventListener('click', function (event) {
+            if (event.target === postPopup) {
+                postPopup.close();
+            }
         });
     </script>
 </body>
