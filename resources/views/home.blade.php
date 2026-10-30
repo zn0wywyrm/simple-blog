@@ -41,6 +41,22 @@
             border-radius: 8px;
             border: 1px solid #ddd;
         }
+        article {
+            margin-top: 16px;
+            padding: 16px;
+            background-color: #f8faff;
+            border: 1px solid #d6deeb;
+            border-radius: 8px;
+        }
+
+        article h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        article p {
+            white-space: pre-wrap;
+        }
     </style>
     <header>
         <h1>The Daily Bugle</h1>
