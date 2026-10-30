@@ -48,12 +48,11 @@
     </header>
 
     <main>
-            <button type="button" id="show-post-form">＋ Write a post</button>
+        <button type="button" id="show-post-form">＋ Write a post</button>
 
-            <form id="post-form" hidden>
-        
-        <form hidden>
-        <form>
+        <form id="post-form" method="POST" action="{{ route('posts.store') }}" hidden>
+            @csrf
+
             <label for="user-name">User name</label>
             <input id="user-name" name="user_name" type="text" required>
 
@@ -63,11 +62,25 @@
             <button type="submit">Publish</button>
         </form>
 
+        @if (session('success'))
+            <p>{{ session('success') }}</p>
+        @endif
+
         <section>
             <h2>Latest posts</h2>
-            <p>No posts yet. Be the first to share something!</p>
+            @if ($posts->isEmpty())
+                <p>No posts yet. Be the first to share something!</p>
+            @else
+                @foreach ($posts as $post)
+                    <article>
+                        <h3>{{ $post->user_name }}</h3>
+                        <p>{{ $post->blog_text }}</p>
+                    </article>
+                @endforeach
+            @endif
         </section>
     </main>
+    
     <script>
         const showPostFormButton = document.getElementById('show-post-form');
         const postForm = document.getElementById('post-form');
